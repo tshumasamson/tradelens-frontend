@@ -184,8 +184,11 @@ function OnboardingApiKey({ onComplete }) {
 
                     </p>
 
-                    <button
+                    <a
+                        href="/downloads/TradeLens-Connector-Setup-1.0.0.exe"
+                        download
                         className="
+                        inline-block
                         mt-6
                         bg-indigo-600
                         hover:bg-indigo-700
@@ -195,10 +198,8 @@ function OnboardingApiKey({ onComplete }) {
                         rounded-xl
                         "
                     >
-
                         Download Connector
-
-                    </button>
+                    </a>
 
                 </div>
 
