@@ -274,6 +274,66 @@ function Login() {
 
                 </form>
 
+
+                <div
+                    className="
+                    mt-8
+                    pt-6
+                    border-t
+                    border-slate-800
+                    text-center
+                    "
+                >
+
+                    <p
+                        className="
+                        text-sm
+                        text-slate-500
+                        mb-3
+                        "
+                    >
+                        Need help?
+                    </p>
+
+                    <div
+                        className="
+                        flex
+                        flex-col
+                        gap-2
+                        "
+                    >
+
+                        <a
+                            href="https://wa.me/263774773804"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="
+                            text-green-400
+                            hover:text-green-300
+                            text-sm
+                            transition
+                            "
+                        >
+                            💬 WhatsApp Support
+                        </a>
+
+                        <a
+                            href="mailto:info@sisam.co.zw"
+                            className="
+                            text-blue-400
+                            hover:text-blue-300
+                            text-sm
+                            transition
+                            "
+                        >
+                            ✉️ info@sisam.co.zw
+                        </a>
+
+                    </div>
+
+                </div>
+
+
             </div>
 
         </div>
