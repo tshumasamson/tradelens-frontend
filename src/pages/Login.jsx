@@ -34,31 +34,45 @@ function Login() {
 
             try {
 
-                const data =
+                const result =
                     await login(
                         username,
                         password
                     );
 
-                if (data.access) {
+                if (result.ok && result.data.access) {
 
                     localStorage.setItem(
                         "access",
-                        data.access
+                        result.data.access
                     );
 
                     localStorage.setItem(
                         "refresh",
-                        data.refresh
+                        result.data.refresh
                     );
 
                     navigate("/onboarding");
-                }
-                else {
 
-                    setError(
-                        "Invalid username or password."
-                    );
+                } else {
+
+                    const detail =
+                        result.data?.detail;
+
+                    if (Array.isArray(detail)) {
+
+                        setError(detail[0]);
+
+                    } else if (detail) {
+
+                        setError(detail);
+
+                    } else {
+
+                        setError(
+                            "Invalid username or password."
+                        );
+                    }
                 }
 
             }
@@ -269,6 +283,20 @@ function Login() {
                             >
                                 Register
                             </Link>
+<div className="">
+
+    <Link
+        to="/forgot-password"
+        className="
+        text-sm
+        text-blue-400
+        hover:text-blue-300
+        "
+    >
+        Forgot Password?
+    </Link>
+
+</div>
 
                         </p>
 
