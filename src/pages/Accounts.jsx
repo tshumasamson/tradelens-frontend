@@ -137,7 +137,7 @@ const noAccounts =
 
                         ?
 
-                        "Step 1 of 3 • Add Your Trading Account"
+                        "Step 1 of 3 • Link MT5 Account"
 
                         :
 
@@ -149,7 +149,7 @@ const noAccounts =
 
                             :
 
-                            "Create Account"
+                            "Link MT5 Account"
 
                     }
                 </h2>
@@ -164,7 +164,7 @@ const noAccounts =
                     {
                         onboarding
                         ?
-                        "Let's connect the MT5 account you want TradeLens to monitor."
+                        "Let's link the MT5 account you want TradeLens to monitor."
                         :
                         "Manage your trading account details"
                     }
@@ -206,7 +206,7 @@ const noAccounts =
                     "
                 >
 
-                    Create Account
+                    Link MT5 Account
 
                 </button>
 
@@ -242,7 +242,7 @@ const noAccounts =
             font-bold
             "
         >
-            No Trading Accounts
+            No Linked MT5 Accounts
         </h2>
 
         <p
@@ -252,7 +252,7 @@ const noAccounts =
             mb-8
             "
         >
-            Create your first trading account
+            Link your first MT5 account
             to begin tracking performance.
         </p>
 
@@ -295,7 +295,7 @@ const noAccounts =
 
         >
 
-            + Create First Account
+            + Link MT5 Account
 
         </button>
 
@@ -410,7 +410,7 @@ const noAccounts =
                                     text-slate-500
                                     "
                                 >
-                                    Trading Account
+                                    Trading/MT5 Account
                                 </div>
 
                             </td>
@@ -561,7 +561,7 @@ const noAccounts =
 
                                 ?
 
-                                "Step 1 of 3 • Add Your Trading Account"
+                                "Step 1 of 3 • Link MT5 Account"
 
                                 :
 
@@ -573,7 +573,7 @@ const noAccounts =
 
                                     :
 
-                                    "Create Account"
+                                    "Link Account"
 
                             }
 
@@ -731,7 +731,7 @@ const noAccounts =
 
                                 {editingAccount
                                     ? "Update Account"
-                                    : "Create Account"
+                                    : "Link Account"
                                 }
 
                             </button>
