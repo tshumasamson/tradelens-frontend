@@ -18,16 +18,15 @@ function Register() {
     const [loading, setLoading] =
         useState(false);
 
-    const [formData, setFormData] =
-        useState({
-
-            username: "",
-            email: "",
-            country: "",
-            password: "",
-            confirmPassword: ""
-
-        });
+    const [formData, setFormData] = useState({
+        first_name: "",
+        last_name: "",
+        username: "",
+        email: "",
+        country: "",
+        password: "",
+        confirmPassword: ""
+    });
 
 
     const handleSubmit =
@@ -58,19 +57,12 @@ function Register() {
 
                 const result =
                     await register({
-
-                        username:
-                            formData.username,
-
-                        email:
-                            formData.email,
-
-                        country:
-                            formData.country,
-
-                        password:
-                            formData.password
-
+                        first_name: formData.first_name,
+                        last_name: formData.last_name,
+                        username: formData.username,
+                        email: formData.email,
+                        country: formData.country,
+                        password: formData.password
                     });
 
 
@@ -299,24 +291,72 @@ function Register() {
 
 
                 <input
+                    type="text"
+                    placeholder="First Name"
+                    value={formData.first_name}
+                    onChange={(e) =>
+                        setFormData({
+                            ...formData,
+                            first_name: e.target.value
+                        })
+                    }
+                    className="
+                        w-full
+                        p-3
+                        rounded-lg
+                        bg-slate-800
+                        text-white
+                    "
+                    required
+                />
+
+                <input
+                    type="text"
+                    placeholder="Surname"
+                    value={formData.last_name}
+                    onChange={(e) =>
+                        setFormData({
+                            ...formData,
+                            last_name: e.target.value
+                        })
+                    }
+                    className="
+                        w-full
+                        p-3
+                        rounded-lg
+                        bg-slate-800
+                        text-white
+                    "
+                    required
+                />
+
+                <input
+                    type="text"
                     placeholder="Username"
                     value={formData.username}
                     onChange={(e) =>
                         setFormData({
                             ...formData,
-                            username:
-                                e.target.value
+                            username: e.target.value
                         })
                     }
                     className="
-                    w-full
-                    p-3
-                    rounded-lg
-                    bg-slate-800
-                    text-white
+                        w-full
+                        p-3
+                        rounded-lg
+                        bg-slate-800
+                        text-white
                     "
+                    minLength={5}
+                    maxLength={150}
+                    pattern="^(?=.*[A-Za-z])\S{5,150}$"
+                    title="Username must be at least 5 characters, contain at least one letter, and cannot contain spaces."
                     required
                 />
+
+                <p className="text-xs text-slate-500 -mt-2">
+                    Username must be at least 5 characters, contain a letter, and cannot contain spaces.
+                </p>
 
 
                 <input
