@@ -510,14 +510,12 @@ function Register() {
                     </Link>
 
                 </p>
-
                 <Link
                     to="/help/installation"
                     className="text-sm text-slate-400 hover:text-white"
                 >
                     Need help getting started?
                 </Link>
-
 
             </form>
 
