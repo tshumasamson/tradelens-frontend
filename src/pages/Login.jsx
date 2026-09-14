@@ -8,6 +8,7 @@ from "react-router-dom";
 import { login } from "../services/authApi";
 
 
+
 function Login() {
 
     const navigate = useNavigate();
@@ -356,7 +357,12 @@ function Login() {
                         >
                             ✉️ info@sisam.co.zw
                         </a>
-
+                        <Link
+                            to="/help/installation"
+                            className="text-sm text-slate-400 hover:text-white"
+                        >
+                            Need help installing TradeLens?
+                        </Link>
                     </div>
 
                 </div>

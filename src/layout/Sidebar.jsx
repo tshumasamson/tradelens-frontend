@@ -82,9 +82,6 @@ function Sidebar() {
                     💳 Accounts
                     
                 </Link>
-
-
-
                 <Link
                     to="/api-keys"
                     className={menuItem}
@@ -103,7 +100,13 @@ function Sidebar() {
                 >
                     ⚙ Settings
                 </Link>
-
+                <Link
+                    to="/help/installation"
+                    className={menuItem}
+                >
+                    ❓ Help
+                </Link>
+                
             </nav>
 
         </aside>

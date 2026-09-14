@@ -1,6 +1,12 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function InstallationGuide() {
+    const navigate = useNavigate();
+
+    const isAuthenticated = Boolean(
+        localStorage.getItem("access")
+    );
+
     return (
         <div className="min-h-screen bg-slate-950 text-white">
 
@@ -15,20 +21,37 @@ function InstallationGuide() {
                         TradeLens
                     </Link>
 
-                    <Link
-                        to="/login"
-                        className="
-                            px-4
-                            py-2
-                            rounded-lg
-                            bg-slate-800
-                            hover:bg-slate-700
-                            text-sm
-                            font-medium
-                        "
-                    >
-                        Login
-                    </Link>
+                    {isAuthenticated ? (
+                        <button
+                            onClick={() => navigate("/")}
+                            className="
+                                px-4
+                                py-2
+                                rounded-lg
+                                bg-slate-800
+                                hover:bg-slate-700
+                                text-sm
+                                font-medium
+                            "
+                        >
+                            ← Back to Dashboard
+                        </button>
+                    ) : (
+                        <Link
+                            to="/login"
+                            className="
+                                px-4
+                                py-2
+                                rounded-lg
+                                bg-slate-800
+                                hover:bg-slate-700
+                                text-sm
+                                font-medium
+                            "
+                        >
+                            Login
+                        </Link>
+                    )}
 
                 </div>
             </header>
