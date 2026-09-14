@@ -19,6 +19,7 @@ import ApiKeys from "./pages/ApiKeys";
 import Connectors from "./pages/Connectors";
 import ConnectorDetail from "./pages/ConnectorDetail";
 import Onboarding from "./pages/Onboarding";
+import InstallationGuide from "./pages/InstallationGuide";
 
 import AppLayout from "./layout/AppLayout";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -50,6 +51,10 @@ function App() {
                 <Route
                     path="/reset-password/:uid/:token"
                     element={<ResetPassword />}
+                />
+                <Route
+                    path="/help/installation"
+                    element={<InstallationGuide />}
                 />
 
                 <Route
