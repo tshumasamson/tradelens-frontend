@@ -31,7 +31,7 @@ function MonthlyTable({
             <div
                 className="
                 overflow-y-auto
-                h-[400px]
+                max-h-[400px]
                 "
             >
 
