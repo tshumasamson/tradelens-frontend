@@ -1,142 +1,92 @@
-function StrategyRanking({
-
-    strategies,
-    onSelectStrategy
-
-}) {
-
+function StrategyRanking({ strategies, onSelectStrategy }) {
     return (
+        <div className="bg-slate-900 border border-slate-800 rounded-xl shadow-sm h-[330px] flex flex-col overflow-hidden">
 
-        <div
-            className="
-            bg-slate-900
-            border
-            border-slate-800
-            rounded-2xl
-            p-6
-            h-[360px]
-            flex
-            flex-col
-            "
-        >
+            {/* Header */}
+            <div className="px-5 py-4 border-b border-slate-800 flex-shrink-0">
+                <h2 className="text-white text-base font-semibold">
+                    Strategy Ranking
+                </h2>
 
-            <h2
-                className="
-                text-white
-                text-2xl
-                font-semibold
-                mb-6
-                "
-            >
-                Strategy Ranking
-            </h2>
+                <p className="text-slate-500 text-xs mt-1">
+                    Performance by strategy
+                </p>
+            </div>
 
-            <div
-                className="
-                space-y-3
-                max-h-[500px]
-                overflow-y-auto
-                pr-2
-                "
-            >
+            {/* Ranking List */}
+            <div className="flex-1 min-h-0 overflow-y-auto">
 
-                {strategies.map(
+                {strategies.map((strategy, index) => {
+                    const profit = Number(strategy.profit || 0);
+                    const positions = Number(strategy.positions || 0);
 
-                    (strategy) => (
-
+                    return (
                         <button
-
                             key={strategy.strategy}
-
                             onClick={() =>
-
-                                onSelectStrategy(
-                                    strategy.strategy
-                                )
-
+                                onSelectStrategy(strategy.strategy)
                             }
-
                             className="
-                            w-full
-                            flex
-                            justify-between
-                            items-center
-                            p-4
-                            rounded-xl
-                            bg-slate-800
-                            hover:bg-slate-700
-                            transition
-                            cursor-pointer
+                                w-full
+                                flex
+                                items-center
+                                gap-3
+                                px-5
+                                py-3
+                                border-b
+                                border-slate-800/70
+                                hover:bg-slate-800/40
+                                transition
+                                text-left
                             "
                         >
 
-                            <div>
+                            {/* Rank */}
+                            <div className="w-6 flex-shrink-0 text-center">
+                                <span className="text-xs font-medium text-slate-500">
+                                    {index + 1}
+                                </span>
+                            </div>
 
-                                <p
-                                    className="
-                                    text-white
-                                    font-medium
-                                    "
-                                >
-                                    {
-                                        strategy.strategy
-                                    }
+                            {/* Strategy */}
+                            <div className="flex-1 min-w-0">
+
+                                <p className="text-sm text-slate-200 font-medium truncate">
+                                    {strategy.strategy}
                                 </p>
 
-                                <p
-                                    className="
-                                    text-slate-400
-                                    text-sm
-                                    "
-                                >
-                                    {
-                                        strategy.positions
-                                    } positions
+                                <p className="text-xs text-slate-500 mt-0.5">
+                                    {positions.toLocaleString()} positions
                                 </p>
 
                             </div>
 
-                            <span
-
-                                className={
-
-                                    strategy.profit >= 0
-
-                                    ? `
-                                        bg-green-500/20
-                                        text-green-400
-                                        px-3
-                                        py-1
-                                        rounded-full
-                                    `
-
-                                    : `
-                                        bg-red-500/20
-                                        text-red-400
-                                        px-3
-                                        py-1
-                                        rounded-full
-                                    `
-                                }
-
+                            {/* Profit */}
+                            <div
+                                className={`
+                                    text-sm
+                                    font-semibold
+                                    tabular-nums
+                                    ${
+                                        profit > 0
+                                            ? "text-green-400"
+                                            : profit < 0
+                                            ? "text-red-400"
+                                            : "text-slate-400"
+                                    }
+                                `}
                             >
-
-                                {strategy.profit}
-
-                            </span>
+                                {profit > 0 ? "+" : ""}
+                                ${profit.toFixed(2)}
+                            </div>
 
                         </button>
-
-                    )
-
-                )}
+                    );
+                })}
 
             </div>
-
         </div>
-
     );
-
 }
 
 export default StrategyRanking;

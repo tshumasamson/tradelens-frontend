@@ -3,151 +3,266 @@
 import {
     formatDateTime,
     formatTimeAgo
-}
-from "../../utils/dateUtils";
+} from "../../utils/dateUtils";
 
-import Card
-from "../common/Card";
-
-import InfoRow
-from "../common/InfoRow";
-
-import StatusBadge
-from "../common/StatusBadge";
+import Card from "../common/Card";
+import InfoRow from "../common/InfoRow";
 
 
 function ConnectorHealthCard({
-
     connector
-
 }) {
+
+    const mt5Connected =
+        connector.mt5_connected;
+
+    const queueSize =
+        connector.queue_size ?? 0;
+
+    const deadLetterCount =
+        connector.dead_letter_count ?? 0;
+
+
+    function metricColor(
+        value,
+        warning = 10
+    ) {
+
+        if (value === 0) {
+            return "text-emerald-400";
+        }
+
+        if (value <= warning) {
+            return "text-amber-400";
+        }
+
+        return "text-red-400";
+
+    }
+
 
     return (
 
-        <Card
-            title="Health"
-        >
+        <Card>
+
+            {/* Header */}
 
             <div
                 className="
-                space-y-5
+                flex
+                items-center
+                justify-between
+                mb-4
                 "
             >
 
-                <InfoRow
+                <div>
 
-                    label="MT5"
+                    <h2
+                        className="
+                        text-[13px]
+                        font-semibold
+                        tracking-tight
+                        text-slate-100
+                        "
+                    >
+                        Connector Health
+                    </h2>
 
-                    value={
+                    <p
+                        className="
+                        mt-0.5
+                        text-[11px]
+                        text-slate-500
+                        "
+                    >
+                        Runtime status and connectivity
+                    </p>
 
-                        <StatusBadge
-                            color={
-                                connector.mt5_connected
-                                    ? "green"
-                                    : "red"
-                            }
-                        >
+                </div>
 
-                            {
 
-                                connector.mt5_connected
+                {/* Health indicator */}
 
-                                    ? "Connected"
+                <div
+                    className={`
+                    flex
+                    items-center
+                    gap-1.5
+                    rounded-md
+                    border
+                    px-2
+                    py-1
+                    text-[10px]
+                    font-medium
+                    ${
+                        mt5Connected
+                            ? "border-emerald-500/20 bg-emerald-500/5 text-emerald-400"
+                            : "border-red-500/20 bg-red-500/5 text-red-400"
+                    }
+                    `}
+                >
 
-                                    : "Disconnected"
+                    <span
+                        className={`
+                        h-1.5
+                        w-1.5
+                        rounded-full
+                        ${
+                            mt5Connected
+                                ? "bg-emerald-400"
+                                : "bg-red-400"
+                        }
+                        `}
+                    />
 
-                            }
-
-                        </StatusBadge>
-
+                    {
+                        mt5Connected
+                            ? "ONLINE"
+                            : "OFFLINE"
                     }
 
-                />
+                </div>
+
+            </div>
+
+
+            {/* Metrics */}
+
+            <div
+                className="
+                divide-y
+                divide-slate-800/70
+                "
+            >
+
+                {/* MT5 */}
 
                 <InfoRow
-
-                    label="Queue"
-
+                    label="MT5 Connection"
                     value={
 
-                        <StatusBadge
-                            color={
-
-                                connector.queue_size === 0
-
-                                    ? "green"
-
-                                    : connector.queue_size <= 10
-
-                                    ? "yellow"
-
-                                    : "red"
-
-                            }
+                        <div
+                            className="
+                            flex
+                            items-center
+                            gap-2
+                            "
                         >
 
-                            {connector.queue_size}
+                            <span
+                                className={`
+                                h-1.5
+                                w-1.5
+                                rounded-full
+                                ${
+                                    mt5Connected
+                                        ? "bg-emerald-400"
+                                        : "bg-red-400"
+                                }
+                                `}
+                            />
 
-                        </StatusBadge>
+                            <span
+                                className={`
+                                text-xs
+                                font-medium
+                                ${
+                                    mt5Connected
+                                        ? "text-emerald-400"
+                                        : "text-red-400"
+                                }
+                                `}
+                            >
+
+                                {
+                                    mt5Connected
+                                        ? "Connected"
+                                        : "Disconnected"
+                                }
+
+                            </span>
+
+                        </div>
 
                     }
-
                 />
 
-                <InfoRow
 
+                {/* Queue */}
+
+                <InfoRow
+                    label="Pending Queue"
+                    value={
+
+                        <span
+                            className={`
+                            text-xs
+                            font-semibold
+                            tabular-nums
+                            ${metricColor(queueSize)}
+                            `}
+                        >
+
+                            {queueSize}
+
+                        </span>
+
+                    }
+                />
+
+
+                {/* Dead Letters */}
+
+                <InfoRow
                     label="Dead Letters"
-
                     value={
 
-                        <StatusBadge
-                            color={
-
-                                connector.dead_letter_count === 0
-
-                                    ? "green"
-
-                                    : connector.dead_letter_count <= 10
-
-                                    ? "yellow"
-
-                                    : "red"
-
-                            }
+                        <span
+                            className={`
+                            text-xs
+                            font-semibold
+                            tabular-nums
+                            ${metricColor(deadLetterCount)}
+                            `}
                         >
 
-                            {connector.dead_letter_count}
+                            {deadLetterCount}
 
-                        </StatusBadge>
+                        </span>
 
                     }
-
                 />
 
-                <InfoRow
 
+                {/* Heartbeat */}
+
+                <InfoRow
                     label="Heartbeat"
-
                     value={
 
-                        <StatusBadge
-                            color="blue"
+                        <span
+                            className="
+                            text-xs
+                            font-medium
+                            text-slate-300
+                            tabular-nums
+                            "
                         >
 
-                            {connector.heartbeat_interval}s
+                            {connector.heartbeat_interval ?? "-"}s
 
-                        </StatusBadge>
+                        </span>
 
                     }
-
                 />
 
+
+                {/* Last Seen */}
+
                 <InfoRow
-
                     label="Last Seen"
-
                     border={false}
-
                     value={
 
                         <div
@@ -158,41 +273,48 @@ function ConnectorHealthCard({
 
                             <div
                                 className="
-                                text-white
-                                "
-                            >
-
-                                {
-
-                                    formatTimeAgo(
-                                        connector.last_seen
-                                    )
-
-                                }
-
-                            </div>
-
-                            <div
-                                className="
                                 text-xs
-                                text-slate-400
+                                font-medium
+                                text-slate-200
                                 "
                             >
 
                                 {
-
-                                    formatDateTime(
-                                        connector.last_seen
-                                    )
-
+                                    connector.last_seen
+                                        ? formatTimeAgo(
+                                            connector.last_seen
+                                        )
+                                        : "Never"
                                 }
 
                             </div>
+
+
+                            {
+                                connector.last_seen && (
+
+                                    <div
+                                        className="
+                                        mt-0.5
+                                        text-[11px]
+                                        text-slate-200
+                                        "
+                                    >
+
+                                        {
+                                            formatDateTime(
+                                                connector.last_seen
+                                            )
+                                        }
+
+                                    </div>
+
+                                )
+                            }
 
                         </div>
 
                     }
-
                 />
 
             </div>
@@ -202,5 +324,6 @@ function ConnectorHealthCard({
     );
 
 }
+
 
 export default ConnectorHealthCard;

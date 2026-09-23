@@ -1,172 +1,302 @@
 function StrategyComparisonTable({
-
     strategies
-
 }) {
 
     return (
 
-        <div
-            className="
+        <div className="
             bg-slate-900
             border
             border-slate-800
-            rounded-2xl
+            rounded-xl
+            shadow-sm
+            h-[450px]
+            flex
+            flex-col
             overflow-hidden
-            "
-        >
+        ">
 
-            <table
-                className="
-                w-full
-                "
-            >
+            {/* ---------------------------------------------- */}
+            {/* Header */}
+            {/* ---------------------------------------------- */}
 
-                <thead>
+            <div className="
+                px-5
+                py-4
+                border-b
+                border-slate-800
+                flex-shrink-0
+            ">
 
-                    <tr
-                        className="
+                <h2 className="
+                    text-white
+                    text-base
+                    font-semibold
+                ">
+                    Strategy Comparison
+                </h2>
+
+                <p className="
+                    text-slate-500
+                    text-xs
+                    mt-1
+                ">
+                    Detailed performance metrics
+                </p>
+
+            </div>
+
+
+            {/* ---------------------------------------------- */}
+            {/* Table */}
+            {/* ---------------------------------------------- */}
+
+            <div className="
+                flex-1
+                min-h-0
+                overflow-auto
+            ">
+
+                <table className="
+                    w-full
+                    min-w-[650px]
+                    text-sm
+                ">
+
+                    <thead className="
+                        sticky
+                        top-0
+                        z-10
+                        bg-slate-900
                         border-b
                         border-slate-800
-                        "
-                    >
+                    ">
 
-                        <th className="p-4 text-left text-slate-400">
-                            Strategy
-                        </th>
+                        <tr className="
+                            text-xs
+                            uppercase
+                            tracking-wide
+                            text-slate-500
+                        ">
 
-                        <th className="p-4 text-left text-slate-400">
-                            Profit
-                        </th>
+                            <th className="
+                                text-left
+                                px-5
+                                py-3
+                                font-medium
+                            ">
+                                Strategy
+                            </th>
 
-                        <th className="p-4 text-left text-slate-400">
-                            Win Rate
-                        </th>
 
-                        <th className="p-4 text-left text-slate-400">
-                            Trades
-                        </th>
+                            <th className="
+                                text-right
+                                px-4
+                                py-3
+                                font-medium
+                            ">
+                                Profit
+                            </th>
 
-                        <th className="p-4 text-left text-slate-400">
-                            Avg Trade
-                        </th>
 
-                    </tr>
+                            <th className="
+                                text-right
+                                px-4
+                                py-3
+                                font-medium
+                            ">
+                                Win Rate
+                            </th>
 
-                </thead>
 
-                <tbody>
+                            <th className="
+                                text-right
+                                px-4
+                                py-3
+                                font-medium
+                            ">
+                                Trades
+                            </th>
 
-                    {
 
-                        strategies.map(
+                            <th className="
+                                text-right
+                                px-5
+                                py-3
+                                font-medium
+                            ">
+                                Avg Trade
+                            </th>
 
-                            (strategy) => (
+                        </tr>
 
-                                <tr
+                    </thead>
 
-                                    key={
-                                        strategy.strategy
-                                    }
 
-                                    className="
-                                    border-b
-                                    border-slate-800
-                                    "
+                    <tbody className="
+                        divide-y
+                        divide-slate-800/70
+                    ">
 
-                                >
+                        {strategies.map(
+                            (strategy, index) => {
 
-                                    <td className="p-4 text-white">
+                                const profit =
+                                    Number(
+                                        strategy.profit || 0
+                                    );
 
-                                        {
-                                            strategy.strategy
+                                const winRate =
+                                    Number(
+                                        strategy.win_rate || 0
+                                    );
+
+                                const positions =
+                                    Number(
+                                        strategy.positions || 0
+                                    );
+
+                                const avgTrade =
+                                    Number(
+                                        strategy.avg_trade || 0
+                                    );
+
+
+                                return (
+
+                                    <tr
+
+                                        key={
+                                            strategy.strategy ||
+                                            index
                                         }
 
-                                    </td>
-
-                                    <td
-
-                                        className={
-
-                                            strategy.profit >= 0
-
-                                            ? "p-4 text-green-400"
-
-                                            : "p-4 text-red-400"
-
-                                        }
-
+                                        className="
+                                            hover:bg-slate-800/30
+                                            transition
+                                        "
                                     >
 
-                                        $
+                                        {/* Strategy */}
 
-                                        {
+                                        <td className="
+                                            px-5
+                                            py-3.5
+                                        ">
 
-                                            strategy.profit
-                                        }
+                                            <span className="
+                                                text-slate-200
+                                                font-medium
+                                            ">
+                                                {strategy.strategy}
+                                            </span>
 
-                                    </td>
+                                        </td>
 
-                                    <td className="p-4 text-white">
 
-                                        {
+                                        {/* Profit */}
 
-                                            strategy.win_rate
+                                        <td className={`
+                                            px-4
+                                            py-3.5
+                                            text-right
+                                            font-semibold
+                                            tabular-nums
+                                            ${
+                                                profit > 0
+                                                    ? "text-green-400"
+                                                    : profit < 0
+                                                    ? "text-red-400"
+                                                    : "text-slate-300"
+                                            }
+                                        `}>
 
-                                        }%
+                                            {profit > 0
+                                                ? "+"
+                                                : ""
+                                            }
 
-                                    </td>
+                                            $
+                                            {profit.toFixed(2)}
 
-                                    <td className="p-4 text-white">
+                                        </td>
 
-                                        {
 
-                                            strategy.positions
+                                        {/* Win Rate */}
 
-                                        }
+                                        <td className="
+                                            px-4
+                                            py-3.5
+                                            text-right
+                                            text-slate-300
+                                            tabular-nums
+                                        ">
 
-                                    </td>
+                                            {winRate.toFixed(2)}%
 
-                                    <td
+                                        </td>
 
-                                        className={
 
-                                            strategy.avg_trade >= 0
+                                        {/* Trades */}
 
-                                            ? "p-4 text-green-400"
+                                        <td className="
+                                            px-4
+                                            py-3.5
+                                            text-right
+                                            text-slate-300
+                                            tabular-nums
+                                        ">
 
-                                            : "p-4 text-red-400"
+                                            {positions.toLocaleString()}
 
-                                        }
+                                        </td>
 
-                                    >
 
-                                        $
+                                        {/* Average Trade */}
 
-                                        {
+                                        <td className={`
+                                            px-5
+                                            py-3.5
+                                            text-right
+                                            font-medium
+                                            tabular-nums
+                                            ${
+                                                avgTrade > 0
+                                                    ? "text-green-400"
+                                                    : avgTrade < 0
+                                                    ? "text-red-400"
+                                                    : "text-slate-400"
+                                            }
+                                        `}>
 
-                                            strategy.avg_trade
+                                            {avgTrade > 0
+                                                ? "+"
+                                                : ""
+                                            }
 
-                                        }
+                                            $
+                                            {avgTrade.toFixed(2)}
 
-                                    </td>
+                                        </td>
 
-                                </tr>
+                                    </tr>
 
-                            )
+                                );
 
-                        )
+                            }
+                        )}
 
-                    }
+                    </tbody>
 
-                </tbody>
+                </table>
 
-            </table>
+            </div>
 
         </div>
 
     );
 
 }
+
 
 export default StrategyComparisonTable;

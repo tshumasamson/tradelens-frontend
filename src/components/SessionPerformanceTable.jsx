@@ -1,208 +1,130 @@
-function SessionPerformanceTable({
-
-    sessions
-
-}) {
-
+function SessionPerformanceTable({ sessions }) {
     return (
+        <div className="bg-slate-900 border border-slate-800 rounded-xl shadow-sm h-[450px] flex flex-col overflow-hidden">
 
-        <div
-            className="
-            bg-slate-900
-            border
-            border-slate-800
-            rounded-2xl
-            p-6
-            h-full
-            flex
-            flex-col
-            "
-        >
+            {/* Header */}
+            <div className="px-5 py-4 border-b border-slate-800">
+                <h2 className="text-white text-base font-semibold">
+                    Session Performance
+                </h2>
 
-            <h2
-                className="
-                text-white
-                text-2xl
-                font-semibold
-                mb-6
-                "
-            >
-                Day Performance
-            </h2>
+                <p className="text-slate-500 text-xs mt-1">
+                    Performance by trading session
+                </p>
+            </div>
 
-            <div
-                className="
-                flex-1
-                overflow-y-auto
-                "
-            >
+            {/* Table */}
+            <div className="flex-1 min-h-0 overflow-auto">
 
-                <table
-                    className="
-                    w-full
-                    text-left
-                    "
-                >
+                <table className="w-full w-[750px] text-sm">
 
-                    <thead>
+                    <thead className="sticky top-0 z-10 bg-slate-900 border-b border-slate-800">
 
-                        <tr
-                            className="
-                            border-b
-                            border-slate-800
-                            text-slate-400
-                            "
-                        >
+                        <tr className="text-xs uppercase tracking-wide text-slate-500">
 
-                            <th>Day</th>
+                            <th className="text-left px-5 py-3 font-medium">
+                                Session
+                            </th>
 
-                            <th>Trades</th>
+                            <th className="text-right px-4 py-3 font-medium">
+                                Trades
+                            </th>
 
-                            <th>Wins</th>
+                            <th className="text-right px-4 py-3 font-medium">
+                                Wins
+                            </th>
+                              {/* 
+                            <th className="text-right px-4 py-3 font-medium">
+                                Win Rate
+                            </th>*/}
 
-                            <th>Win Rate</th>
+                            <th className="text-right px-4 py-3 font-medium">
+                                P&L
+                            </th>
 
-                            <th>Profit</th>
-                            <th>Avg Trade</th>
+                            <th className="text-right px-5 py-3 font-medium">
+                                Avg Trade
+                            </th>
 
                         </tr>
 
                     </thead>
 
-                    <tbody>
+                    <tbody className="divide-y divide-slate-800/70">
 
-                        {
+                        {sessions.map((session, index) => {
 
-                            sessions.map(
+                            const profit = Number(session.profit || 0);
+                            const positions = Number(session.positions || 0);
+                            const wins = Number(session.wins || 0);
+                            const winRate = Number(session.win_rate || 0);
+                            const avgTrade = Number(session.avg_trade || 0);
 
-                                (
-                                    session
-                                ) => (
+                            return (
+                                <tr
+                                    key={session.session || index}
+                                    className="hover:bg-slate-800/30 transition"
+                                >
 
-                                    <tr
+                                    {/* Session */}
+                                    <td className="px-5 py-3.5 text-slate-200 font-medium">
+                                        {session.session || "-"}
+                                    </td>
 
-                                        key={
-                                            session.session
-                                        }
+                                    {/* Trades */}
+                                    <td className="px-4 py-3.5 text-right text-slate-300 tabular-nums">
+                                        {positions.toLocaleString()}
+                                    </td>
 
-                                        className="
-                                        border-b
-                                        border-slate-800
-                                        "
+                                    {/* Wins 
+                                    <td className="px-4 py-3.5 text-right text-slate-300 tabular-nums">
+                                        {wins.toLocaleString()}
+                                    </td>*/}
 
+                                    {/* Win Rate */}
+                                    <td className="px-4 py-3.5 text-right text-slate-300 tabular-nums">
+                                        {winRate.toFixed(2)}%
+                                    </td>
+
+                                    {/* P&L */}
+                                    <td
+                                        className={`px-4 py-3.5 text-right font-semibold tabular-nums ${
+                                            profit > 0
+                                                ? "text-green-400"
+                                                : profit < 0
+                                                    ? "text-red-400"
+                                                    : "text-slate-300"
+                                        }`}
                                     >
+                                        {profit > 0 ? "+" : ""}
+                                        ${profit.toFixed(2)}
+                                    </td>
 
-                                        <td
-                                            className="
-                                            py-4
-                                            text-white
-                                            "
-                                        >
-                                            {session.session}
-                                        </td>
+                                    {/* Average Trade */}
+                                    <td
+                                        className={`px-5 py-3.5 text-right font-medium tabular-nums ${
+                                            avgTrade > 0
+                                                ? "text-green-400"
+                                                : avgTrade < 0
+                                                    ? "text-red-400"
+                                                    : "text-slate-400"
+                                        }`}
+                                    >
+                                        {avgTrade > 0 ? "+" : ""}
+                                        ${avgTrade.toFixed(2)}
+                                    </td>
 
-                                        <td
-                                            className="
-                                            py-4
-                                            text-white
-                                            "
-                                        >
-                                            {
-                                                session.positions
-                                            }
-                                        </td>
-
-                                        <td
-                                            className="
-                                            py-4
-                                            text-green-400
-                                            "
-                                        >
-                                            {
-                                                session.wins
-                                            }
-                                        </td>
-
-                                        <td
-                                            className="
-                                            py-4
-                                            text-blue-400
-                                            "
-                                        >
-                                            {
-                                                session.win_rate
-                                            }%
-                                        </td>
-
-                                        <td
-                                            className="
-                                            py-4
-                                            "
-                                        >
-
-                                            <span
-
-                                                className={
-
-                                                    session.profit >= 0
-
-                                                    ? `
-                                                        bg-green-500/20
-                                                        text-green-400
-                                                        px-3
-                                                        py-1
-                                                        rounded-full
-                                                      `
-
-                                                    : `
-                                                        bg-red-500/20
-                                                        text-red-400
-                                                        px-3
-                                                        py-1
-                                                        rounded-full
-                                                      `
-                                                }
-
-                                            >
-
-                                                $
-
-                                                {
-                                                    session.profit
-                                                }
-
-                                            </span>
-
-                                            </td>
-                                                                                    <td
-                                                className="
-                                                py-4
-                                                text-blue-400
-                                                "
-                                            >
-                                                {
-                                                    session.avg_trade
-                                                }%
-                                            </td>
-
-                                    </tr>
-
-                                )
-
-                            )
-
-                        }
+                                </tr>
+                            );
+                        })}
 
                     </tbody>
 
                 </table>
 
             </div>
-
         </div>
-
     );
-
 }
 
 export default SessionPerformanceTable;

@@ -166,81 +166,7 @@ if (
 
     return (
 
-        <div className="space-y-8">
-
-            <div>
-
-                <h1
-                    className="
-                    text-5xl
-                    font-bold
-                    text-white
-                    "
-                >
-                    Trading Analytics Overview
-                </h1>
-                
-                <div
-                    className="
-                    flex
-                    gap-2
-                    flex-wrap
-                    "
-                >
-
-                    {strategy && (
-
-                        <span
-                            className="
-                            px-3
-                            py-1
-                            bg-blue-600
-                            rounded-full
-                            text-white
-                            text-sm
-                            "
-                        >
-
-                            Strategy:
-                            {strategy}
-
-                        </span>
-
-                    )}
-
-                    {symbol && (
-
-                        <span
-                            className="
-                            px-3
-                            py-1
-                            bg-green-600
-                            rounded-full
-                            text-white
-                            text-sm
-                            "
-                        >
-
-                            Symbol:
-                            {symbol}
-
-                        </span>
-
-                    )}
-
-                </div>
-
-                <p
-                    className="
-                    text-slate-400
-                    mt-2
-                    "
-                >
-                    Monitor performance,
-                    profitability and risk.
-                </p>
-
-            </div>
+        <div className="space-y-5">
             
             <FilterPanel
 
@@ -275,52 +201,62 @@ if (
             />
 
 
-            <div
-                className="
-                grid
-                grid-cols-1
-                md:grid-cols-2
-                xl:grid-cols-4
-                gap-6
-                "
-            >
+<div
+    className="
+        grid
+        grid-cols-1
+        sm:grid-cols-2
+        xl:grid-cols-4
+        gap-4
+    "
+>
 
-                <MetricCard
-                    title="Current Equity"
-                    prefix="$"
-                    value={
-                        dashboard.account_value
-                        .current_equity
-                    }
-                />
+    <MetricCard
+        title="Current Equity"
+        prefix="$"
+        value={
+            dashboard.account_value.current_equity
+        }
+        subtitle="Current account equity"
+        icon="◉"
+        iconColor="text-cyan-400"
+        iconBg="bg-cyan-500/10"
+    />
 
-                <MetricCard
-                    title="Net Profit"
-                    prefix="$"
-                    value={
-                        dashboard.summary
-                        .net_trading_profit
-                    }
-                />
+<MetricCard
+    title="Net Profit"
+    prefix="$"
+    value={dashboard.summary.net_trading_profit}
+    subtitle="Net trading profit"
+    icon="↗"
+    iconColor="text-green-400"
+    iconBg="bg-green-500/10"
+/>
 
-                <MetricCard
-                    title="Profit Factor"
-                    value={
-                        dashboard.performance
-                        .profit_factor
-                    }
-                />
+    <MetricCard
+        title="Profit Factor"
+        value={
+            dashboard.performance.profit_factor
+        }
+        subtitle="Gross profit / loss"
+        icon="▮"
+        iconColor="text-purple-400"
+        iconBg="bg-purple-500/10"
+    />
 
-                <MetricCard
-                    title="Win Rate"
-                    value={
-                        dashboard.performance
-                        .win_rate
-                    }
-                    suffix="%"
-                />
+    <MetricCard
+        title="Win Rate"
+        value={
+            dashboard.performance.win_rate
+        }
+        suffix="%"
+        subtitle="Winning trades"
+        icon="◎"
+        iconColor="text-blue-400"
+        iconBg="bg-blue-500/10"
+    />
 
-            </div>
+</div>
 
             <div
                 className="

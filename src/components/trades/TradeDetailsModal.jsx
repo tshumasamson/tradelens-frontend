@@ -1,286 +1,306 @@
 import TradeJournalForm from "./TradeJournalForm";
 
-
 function TradeDetailsModal({
-
     trade,
-
     onClose,
-
     calculateDuration
-
 }) {
-
-    if (!trade)
+    if (!trade) {
         return null;
+    }
+
+    const profit = Number(trade.profit || 0);
+
+    const isProfit = profit > 0;
+    const isLoss = profit < 0;
+
+    const totalCosts =
+        Number(trade.commission || 0) +
+        Number(trade.swap || 0);
 
     return (
-
         <div
-
             onClick={onClose}
-
             className="
-            fixed
-            inset-0
-            bg-black/70
-            flex
-            items-center
-            justify-center
-            z-50
+                fixed
+                inset-0
+                bg-black/70
+                backdrop-blur-sm
+                flex
+                items-center
+                justify-center
+                z-50
+                p-4
             "
-
         >
 
+            {/* Modal */}
             <div
-
-                onClick={(e) =>
-                    e.stopPropagation()
-                }
-
+                onClick={(e) => e.stopPropagation()}
                 className="
-                bg-slate-900
-                border
-                border-slate-800
-                rounded-2xl
-                p-8
-                w-[800px]
-                max-w-[95%]
-                max-h-[90vh]
-                overflow-y-auto
+                    bg-slate-900
+                    border
+                    border-slate-800
+                    rounded-xl
+                    w-[800px]
+                    max-w-[95vw]
+                    max-h-[90vh]
+                    overflow-y-auto
+                    shadow-2xl
                 "
-
             >
 
+                {/* Header */}
                 <div
                     className="
-                    flex
-                    justify-between
-                    items-center
-                    mb-6
-                    "
-                >
-
-                    <h2
-                        className="
-                        text-white
-                        text-2xl
-                        font-bold
-                        "
-                    >
-                        Trade Details
-                    </h2>
-
-                    <button
-
-                        onClick={onClose}
-
-                        className="
-                        bg-slate-800
-                        hover:bg-slate-700
-                        text-white
-                        px-4
-                        py-2
-                        rounded-lg
-                        "
-                    >
-
-                        Close
-
-                    </button>
-
-                </div>
-
-                <div
-                    className="
-                    space-y-4
+                        px-6
+                        py-5
+                        border-b
+                        border-slate-800
+                        flex
+                        items-start
+                        justify-between
                     "
                 >
 
                     <div>
 
-                        <h3
-                            className="
-                            text-2xl
-                            font-bold
-                            text-white
-                            "
-                        >
+                        <h2 className="text-xl font-semibold text-white">
+                            Trade Review
+                        </h2>
+
+                        <p className="text-sm text-slate-500 mt-1">
                             {trade.symbol}
-                        </h3>
+                            {trade.strategy
+                                ? ` · ${trade.strategy}`
+                                : ""}
+                        </p>
 
-                        <p
-                            className="
+                    </div>
+
+
+                    {/* Close */}
+                    <button
+                        onClick={onClose}
+                        className="
+                            w-8
+                            h-8
+                            rounded-lg
+                            flex
+                            items-center
+                            justify-center
                             text-slate-400
-                            text-sm
-                            "
+                            hover:text-white
+                            hover:bg-slate-800
+                            transition
+                            text-lg
+                        "
+                        aria-label="Close"
+                    >
+                        ×
+                    </button>
+
+                </div>
+
+
+                {/* Content */}
+                <div className="px-6 py-5">
+
+                    {/* Trade Summary */}
+                    <div>
+
+                        <div className="flex items-center justify-between">
+
+                            <div>
+
+                                <h3 className="text-lg font-semibold text-white">
+                                    {trade.symbol}
+                                </h3>
+
+                                <p className="text-xs text-slate-500 mt-1">
+                                    {trade.strategy || "No strategy"}
+                                </p>
+
+                            </div>
+
+
+                            {/* Direction */}
+                            <span
+                                className={`
+                                    inline-flex
+                                    items-center
+                                    px-2.5
+                                    py-1
+                                    rounded-md
+                                    text-xs
+                                    font-semibold
+                                    border
+                                    ${
+                                        trade.direction === "BUY"
+                                            ? `
+                                                bg-green-500/10
+                                                border-green-500/20
+                                                text-green-400
+                                            `
+                                            : `
+                                                bg-red-500/10
+                                                border-red-500/20
+                                                text-red-400
+                                            `
+                                    }
+                                `}
+                            >
+                                {trade.direction}
+                            </span>
+
+                        </div>
+
+
+                        {/* P&L */}
+                        <div
+                            className={`
+                                text-3xl
+                                font-bold
+                                tracking-tight
+                                mt-4
+                                ${
+                                    isProfit
+                                        ? "text-green-400"
+                                        : isLoss
+                                        ? "text-red-400"
+                                        : "text-slate-300"
+                                }
+                            `}
                         >
-                            {trade.strategy}
-                        </p>
+                            {isProfit ? "+" : ""}
+                            ${profit.toFixed(2)}
+                        </div>
 
                     </div>
 
-                    <div
-                        className="
-                        flex
-                        justify-between
-                        items-center
-                        "
-                    >
 
-                        <span
+                    {/* Main Trade Metrics */}
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6">
 
-                            className={
+                        {/* Volume */}
+                        <div className="bg-slate-950 border border-slate-800 rounded-lg p-3">
 
-                                trade.direction === "BUY"
+                            <p className="text-xs text-slate-500">
+                                Volume
+                            </p>
 
-                                ? `
-                                    bg-green-500/20
-                                    text-green-400
-                                    px-3
-                                    py-1
-                                    rounded-full
-                                  `
+                            <p className="text-sm text-slate-200 font-medium mt-1">
+                                {trade.volume ?? "-"}
+                            </p>
 
-                                : `
-                                    bg-red-500/20
-                                    text-red-400
-                                    px-3
-                                    py-1
-                                    rounded-full
-                                  `
-                            }
+                        </div>
 
-                        >
 
-                            {trade.direction}
+                        {/* Duration */}
+                        <div className="bg-slate-950 border border-slate-800 rounded-lg p-3">
 
-                        </span>
+                            <p className="text-xs text-slate-500">
+                                Duration
+                            </p>
 
-                        <span
-
-                            className={
-
-                                Number(
-                                    trade.profit
-                                ) >= 0
-
-                                ? `
-                                    text-green-400
-                                    text-3xl
-                                    font-bold
-                                  `
-
-                                : `
-                                    text-red-400
-                                    text-3xl
-                                    font-bold
-                                  `
-                            }
-
-                        >
-
-                            {trade.profit}
-
-                        </span>
-
-                    </div>
-
-                    <div
-                        className="
-                        grid
-                        grid-cols-2
-                        gap-y-3
-                        text-sm
-                        "
-                    >
-
-                        <p className="text-slate-400">
-                            Duration
-                        </p>
-
-                        <p className="text-white">
-                            {
-                                calculateDuration(
+                            <p className="text-sm text-slate-200 font-medium mt-1">
+                                {calculateDuration(
                                     trade.entry_time,
                                     trade.exit_time
-                                )
-                            }
-                        </p>
+                                )}
+                            </p>
 
-                        <p className="text-slate-400">
-                            Volume
-                        </p>
+                        </div>
 
-                        <p className="text-white">
-                            {trade.volume}
-                        </p>
 
-                        <p className="text-slate-400">
-                            Entry Price
-                        </p>
+                        {/* Entry Price */}
+                        <div className="bg-slate-950 border border-slate-800 rounded-lg p-3">
 
-                        <p className="text-white">
-                            {trade.entry_price}
-                        </p>
+                            <p className="text-xs text-slate-500">
+                                Entry Price
+                            </p>
 
-                        <p className="text-slate-400">
-                            Exit Price
-                        </p>
+                            <p className="text-sm text-slate-200 font-medium mt-1">
+                                {trade.entry_price ?? "-"}
+                            </p>
 
-                        <p className="text-white">
-                            {trade.exit_price}
-                        </p>
+                        </div>
 
-                        <p className="text-slate-400">
-                            Stop Loss
-                        </p>
 
-                        <p className="text-white">
-                            {trade.stop_loss}
-                        </p>
+                        {/* Exit Price */}
+                        <div className="bg-slate-950 border border-slate-800 rounded-lg p-3">
 
-                        <p className="text-slate-400">
-                            Take Profit
-                        </p>
+                            <p className="text-xs text-slate-500">
+                                Exit Price
+                            </p>
 
-                        <p className="text-white">
-                            {trade.take_profit}
-                        </p>
+                            <p className="text-sm text-slate-200 font-medium mt-1">
+                                {trade.exit_price ?? "-"}
+                            </p>
 
-                        <p className="text-slate-400">
-                            Commission
-                        </p>
-
-                        <p className="text-white">
-                            {trade.commission}
-                        </p>
-
-                        <p className="text-slate-400">
-                            Swap
-                        </p>
-
-                        <p className="text-white">
-                            {trade.swap}
-                        </p>
-
-                        <TradeJournalForm
-                            trade={trade}
-                        />
+                        </div>
 
                     </div>
+
+
+                    {/* Risk / Cost Metrics */}
+                    <div className="grid grid-cols-3 gap-3 mt-3">
+
+                        {/* Stop Loss */}
+                        <div className="bg-slate-950 border border-slate-800 rounded-lg p-3">
+
+                            <p className="text-xs text-slate-500">
+                                Stop Loss
+                            </p>
+
+                            <p className="text-sm text-slate-200 font-medium mt-1">
+                                {trade.stop_loss ?? "-"}
+                            </p>
+
+                        </div>
+
+
+                        {/* Take Profit */}
+                        <div className="bg-slate-950 border border-slate-800 rounded-lg p-3">
+
+                            <p className="text-xs text-slate-500">
+                                Take Profit
+                            </p>
+
+                            <p className="text-sm text-slate-200 font-medium mt-1">
+                                {trade.take_profit ?? "-"}
+                            </p>
+
+                        </div>
+
+
+                        {/* Costs */}
+                        <div className="bg-slate-950 border border-slate-800 rounded-lg p-3">
+
+                            <p className="text-xs text-slate-500">
+                                Costs
+                            </p>
+
+                            <p className="text-sm text-slate-200 font-medium mt-1">
+                                ${totalCosts.toFixed(2)}
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    {/* Trade Journal */}
+                    <TradeJournalForm
+                        trade={trade}
+                    />
 
                 </div>
 
             </div>
-            
 
         </div>
-
-
-
-
     );
-
 }
+
 export default TradeDetailsModal;

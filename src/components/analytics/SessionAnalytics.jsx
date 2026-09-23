@@ -1,146 +1,117 @@
 import MetricCard from "../MetricCard";
+import SessionProfitChart from "../SessionProfitChart";
+import SessionPerformanceTable from "../SessionPerformanceTable";
 
-import SessionProfitChart
-from "../SessionProfitChart";
+function SessionAnalytics({ sessions }) {
+    const bestSession = sessions.length
+        ? [...sessions].sort(
+              (a, b) => Number(b.profit) - Number(a.profit)
+          )[0]
+        : null;
 
-import SessionPerformanceTable
-from "../SessionPerformanceTable";
+    const worstSession = sessions.length
+        ? [...sessions].sort(
+              (a, b) => Number(a.profit) - Number(b.profit)
+          )[0]
+        : null;
 
+    const bestSessionWinRate = sessions.length
+        ? [...sessions].sort(
+              (a, b) => Number(b.win_rate) - Number(a.win_rate)
+          )[0]
+        : null;
 
-function SessionAnalytics({
+    // Profit determines arrow direction and colour.
+    const getProfitIcon = (profit) => {
+        const numericProfit = Number(profit);
 
-    sessions
+        if (numericProfit < 0) {
+            return {
+                icon: "↘︎",
+                iconColor: "text-red-400",
+                iconBg: "bg-red-500/10",
+            };
+        }
 
-}) {
+        return {
+            icon: "↗︎",
+            iconColor: "text-green-400",
+            iconBg: "bg-green-500/10",
+        };
+    };
 
-    const bestSession =
-        [...sessions]
-            .sort(
-                (a,b)=>
-                    b.profit -
-                    a.profit
-            )[0];
-
-    const worstSession =
-        [...sessions]
-            .sort(
-                (a,b)=>
-                    a.profit -
-                    b.profit
-            )[0];
-
-    const bestSessionWinRate =
-        [...sessions]
-            .sort(
-                (a,b)=>
-                    b.win_rate -
-                    a.win_rate
-            )[0];
+    const bestSessionIcon = getProfitIcon(bestSession?.profit);
+    const worstSessionIcon = getProfitIcon(worstSession?.profit);
 
     return (
+        <div className="space-y-5">
 
-        <>
+            {/* Section label */}
+            <div>
+                <h2 className="text-sm font-medium text-slate-300">
+                    Session Performance
+                </h2>
 
-            <div
-                className="
-                grid
-                grid-cols-1
-                md:grid-cols-3
-                gap-6
-                "
-            >
+                <p className="text-xs text-slate-500 mt-1">
+                    Compare profitability and win rate across trading sessions.
+                </p>
+            </div>
 
+            {/* KPI Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+                {/* Best Session */}
                 <MetricCard
-
                     title="Best Session"
-
-                    subtitle={
-                        bestSession.session
-                    }
-
-                    value={
-                        bestSession.profit
-                    }
-
                     prefix="$"
-
+                    value={bestSession?.profit}
+                    subtitle={bestSession?.session || "-"}
+                    icon={bestSessionIcon.icon}
+                    iconColor={bestSessionIcon.iconColor}
+                    iconBg={bestSessionIcon.iconBg}
                 />
 
+                {/* Worst Session */}
                 <MetricCard
-
                     title="Worst Session"
-
-                    subtitle={
-                        worstSession.session
-                    }
-
-                    value={
-                        worstSession.profit
-                    }
-
                     prefix="$"
-
+                    value={worstSession?.profit}
+                    subtitle={worstSession?.session || "-"}
+                    icon={worstSessionIcon.icon}
+                    iconColor={worstSessionIcon.iconColor}
+                    iconBg={worstSessionIcon.iconBg}
                 />
 
+                {/* Best Win Rate */}
                 <MetricCard
-
                     title="Best Win Rate"
-
-                    subtitle={
-                        bestSessionWinRate.session
-                    }
-
-                    value={
-                        bestSessionWinRate.win_rate
-                    }
-
+                    value={bestSessionWinRate?.win_rate}
                     suffix="%"
-
+                    subtitle={bestSessionWinRate?.session || "-"}
+                    icon="◎"
+                    iconColor="text-blue-400"
+                    iconBg="bg-blue-500/10"
                 />
 
             </div>
 
-            <div
-                className="
-                grid
-                grid-cols-1
-                xl:grid-cols-5
-                gap-6
-                "
-            >
+            {/* Chart + Table */}
+            <div className="grid grid-cols-1 xl:grid-cols-5 gap-4">
 
-                <div
-                    className="
-                    xl:col-span-2
-                    h-[450px]
-                    "
-                >
-
-                    <SessionProfitChart
-                        data={sessions}
-                    />
-
+                {/* Profit Chart */}
+                <div className="xl:col-span-2 h-[450px]">
+                    <SessionProfitChart data={sessions} />
                 </div>
 
-                <div
-                    className="
-                    xl:col-span-3
-                    h-[450px]
-                    "
-                >
-
-                    <SessionPerformanceTable
-                        sessions={sessions}
-                    />
-
+                {/* Performance Table */}
+                <div className="xl:col-span-3 h-[450px]">
+                    <SessionPerformanceTable sessions={sessions} />
                 </div>
 
             </div>
 
-        </>
-
+        </div>
     );
-
 }
 
 export default SessionAnalytics;

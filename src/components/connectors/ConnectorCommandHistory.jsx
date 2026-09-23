@@ -1,150 +1,202 @@
-import {
+// components/connectors/ConnectorCommandHistory.jsx
 
+import {
     useEffect,
-
     useState
+} from "react";
 
-}
-from "react";
+import Card from "../common/Card";
 
-import Card
-from "../common/Card";
-
-import StatusBadge
-from "../common/StatusBadge";
+import StatusBadge from "../common/StatusBadge";
 
 import {
-
     getConnectorCommands
-
-}
-from "../../services/connectorApi";
+} from "../../services/connectorApi";
 
 import {
     formatDateTime
-}
-from "../../utils/dateUtils";
+} from "../../utils/dateUtils";
+
+
+const PAGE_SIZE = 6;
 
 
 function ConnectorCommandHistory({
-
     connectorId
-
 }) {
 
     const [
-
         commands,
-
         setCommands
-
     ] = useState([]);
 
-    const [
 
+    const [
         currentPage,
-
         setCurrentPage
-
     ] = useState(1);
 
-    const [
 
+    const [
         totalPages,
-
         setTotalPages
-
     ] = useState(1);
 
-    const [
 
+    const [
         hasNext,
-
         setHasNext
-
     ] = useState(false);
+
 
     const [
-
         hasPrevious,
-
         setHasPrevious
-
     ] = useState(false);
+
+
+    const [
+        loading,
+        setLoading
+    ] = useState(true);
+
+
+    const [
+        error,
+        setError
+    ] = useState(null);
+
 
     async function loadCommands(
-
         page = 1
-
     ) {
 
-        const data =
+        setLoading(true);
 
-            await getConnectorCommands(
+        setError(null);
 
-                connectorId,
 
-                page
+        try {
 
+            const data =
+                await getConnectorCommands(
+                    connectorId,
+                    page
+                );
+
+
+            const results =
+                data.results || [];
+
+
+            setCommands(
+                results
             );
 
-        setCommands(
 
-            data.results || []
+            setCurrentPage(
+                page
+            );
 
-        );
 
-        setCurrentPage(
+            setHasNext(
+                data.next !== null &&
+                data.next !== undefined
+            );
 
-            page
 
-        );
+            setHasPrevious(
+                data.previous !== null &&
+                data.previous !== undefined
+            );
 
-        setHasNext(
 
-            data.next !== null
+            /*
+             * Backend pagination uses 6 results
+             * per page.
+             *
+             * Example:
+             *
+             * count = 9
+             * page size = 6
+             *
+             * 9 / 6 = 1.5
+             * ceil = 2 pages
+             */
 
-        );
+            setTotalPages(
+                Math.max(
+                    1,
+                    Math.ceil(
+                        (data.count || 0) /
+                        PAGE_SIZE
+                    )
+                )
+            );
 
-        setHasPrevious(
+        }
 
-            data.previous !== null
+        catch (err) {
 
-        );
+            console.error(
+                err
+            );
 
-        setTotalPages(
 
-            Math.ceil(
+            setError(
+                "Unable to load command history."
+            );
 
-                data.count / data.results.length
 
-            )
+            setCommands([]);
 
-        );
+        }
+
+        finally {
+
+            setLoading(false);
+
+        }
 
     }
 
+
     useEffect(() => {
 
-        loadCommands(1);
+        if (!connectorId) {
+            return;
+        }
+
+
+        loadCommands(
+            1
+        );
 
     }, [connectorId]);
 
-    function badgeColor(status) {
 
-        switch (status) {
+    function badgeColor(
+        status
+    ) {
+
+        switch (
+            status
+        ) {
 
             case "COMPLETED":
 
                 return "green";
 
+
             case "FAILED":
 
                 return "red";
 
+
             case "IN_PROGRESS":
 
                 return "blue";
+
 
             default:
 
@@ -154,239 +206,521 @@ function ConnectorCommandHistory({
 
     }
 
+
+    function formatCommand(
+        command
+    ) {
+
+        if (!command) {
+            return "-";
+        }
+
+
+        return command.replaceAll(
+            "_",
+            " "
+        );
+
+    }
+
+
     return (
 
-        <Card
-            title="Command History"
-        >
+        <Card>
 
-            {
 
-                commands.length === 0
+            {/* ------------------------------------------------ */}
+            {/* Header */}
+            {/* ------------------------------------------------ */}
 
-                ?
+            <div
+                className="
+                flex
+                items-center
+                justify-between
+                mb-4
+                "
+            >
 
-                <div
-                    className="
-                    text-slate-400
-                    text-center
-                    py-10
-                    "
-                >
+                <div>
 
-                    No commands have been issued.
+                    <h2
+                        className="
+                        text-sm
+                        font-semibold
+                        text-white
+                        "
+                    >
+
+                        Command History
+
+                    </h2>
+
+
+                    <p
+                        className="
+                        text-xs
+                        text-slate-500
+                        mt-1
+                        "
+                    >
+
+                        Recent commands sent to this connector
+
+                    </p>
 
                 </div>
 
-                :
 
                 <div
                     className="
-                    max-h-[450px]
-                    overflow-y-auto
-                    "
-                >
-
-                    <table
-                        className="
-                        w-full
-                        "
-                    >
-
-                        <thead
-                            className="
-                            sticky
-                            top-0
-                            bg-slate-900
-                            z-10
-                            "
-                        >
-
-                            <tr
-                                className="
-                                border-b
-                                border-slate-800
-                                text-slate-400
-                                "
-                            >
-
-                                <th className="text-left py-3">
-                                    Time
-                                </th>
-
-                                <th className="text-left py-3">
-                                    Command
-                                </th>
-
-                                <th className="text-left py-3">
-                                    Status
-                                </th>
-
-                            </tr>
-
-                        </thead>
-                    <tbody>
-
-                        {
-
-                            commands.map(
-
-                                command => (
-
-                                    <tr
-
-                                        key={
-                                            command.id
-                                        }
-
-                                        className="
-                                        border-b
-                                        border-slate-800
-                                        "
-
-                                    >
-
-                                        <td
-                                            className="
-                                            py-4
-                                            text-slate-300
-                                            "
-                                        >
-
-                                            {
-
-                                                formatDateTime(
-                                                    command.created_at
-                                                )
-
-                                            }
-
-                                        </td>
-
-                                        <td
-                                            className="
-                                            py-4
-                                            text-white
-                                            font-medium
-                                            "
-                                        >
-
-                                            {
-                                                command.command
-                                            }
-
-                                        </td>
-
-                                        <td
-                                            className="
-                                            py-4
-                                            "
-                                        >
-
-                                            <StatusBadge
-                                                color={
-                                                    badgeColor(
-                                                        command.status
-                                                    )
-                                                }
-                                            >
-
-                                                {
-                                                    command.status
-                                                }
-
-                                            </StatusBadge>
-
-                                        </td>
-
-                                    </tr>
-
-                                )
-
-                            )
-
-                        }
-
-                    </tbody>
-
-                </table>
-
-                <div
-                    className="
+                    h-8
+                    w-8
+                    rounded-lg
+                    bg-slate-800
+                    border
+                    border-slate-700
                     flex
                     items-center
-                    justify-between
-                    mt-6
-                    pt-4
-                    border-t
-                    border-slate-800
+                    justify-center
+                    text-slate-400
+                    text-sm
                     "
                 >
 
-                    <button
-
-                        disabled={!hasPrevious}
-
-                        onClick={() =>
-                            loadCommands(
-                                currentPage - 1
-                            )
-                        }
-
-                        className="
-                        px-4
-                        py-2
-                        rounded-lg
-                        bg-slate-800
-                        hover:bg-slate-700
-                        disabled:opacity-40
-                        disabled:cursor-not-allowed
-                        "
-                    >
-
-                        Previous
-
-                    </button>
-
-                    <div
-                        className="
-                        text-slate-400
-                        "
-                    >
-
-                        Page {currentPage} of {totalPages}
-
-                    </div>
-
-                    <button
-
-                        disabled={!hasNext}
-
-                        onClick={() =>
-                            loadCommands(
-                                currentPage + 1
-                            )
-                        }
-
-                        className="
-                        px-4
-                        py-2
-                        rounded-lg
-                        bg-slate-800
-                        hover:bg-slate-700
-                        disabled:opacity-40
-                        disabled:cursor-not-allowed
-                        "
-                    >
-
-                        Next
-
-                    </button>
+                    ≡
 
                 </div>
 
             </div>
 
+
+            {/* ------------------------------------------------ */}
+            {/* Error */}
+            {/* ------------------------------------------------ */}
+
+            {
+                error && (
+
+                    <div
+                        className="
+                        rounded-lg
+                        border
+                        border-red-500/20
+                        bg-red-500/10
+                        px-3
+                        py-2.5
+                        text-xs
+                        text-red-300
+                        "
+                    >
+
+                        {error}
+
+                    </div>
+
+                )
+            }
+
+
+            {/* ------------------------------------------------ */}
+            {/* Loading */}
+            {/* ------------------------------------------------ */}
+
+            {
+                loading && (
+
+                    <div
+                        className="
+                        py-10
+                        text-center
+                        text-xs
+                        text-slate-500
+                        "
+                    >
+
+                        Loading command history...
+
+                    </div>
+
+                )
+            }
+
+
+            {/* ------------------------------------------------ */}
+            {/* Empty State */}
+            {/* ------------------------------------------------ */}
+
+            {
+                !loading &&
+                !error &&
+                commands.length === 0 && (
+
+                    <div
+                        className="
+                        rounded-lg
+                        border
+                        border-dashed
+                        border-slate-800
+                        py-10
+                        text-center
+                        "
+                    >
+
+                        <div
+                            className="
+                            text-sm
+                            text-slate-400
+                            "
+                        >
+
+                            No commands have been issued.
+
+                        </div>
+
+
+                        <div
+                            className="
+                            text-xs
+                            text-slate-600
+                            mt-1
+                            "
+                        >
+
+                            Connector actions will appear here.
+
+                        </div>
+
+                    </div>
+
+                )
+            }
+
+
+            {/* ------------------------------------------------ */}
+            {/* Command Table */}
+            {/* ------------------------------------------------ */}
+
+            {
+                !loading &&
+                !error &&
+                commands.length > 0 && (
+
+                    <>
+
+                        <div
+                            className="
+                            overflow-x-auto
+                            "
+                        >
+
+                            <table
+                                className="
+                                w-full
+                                "
+                            >
+
+                                <thead>
+
+                                    <tr
+                                        className="
+                                        border-b
+                                        border-slate-800
+                                        text-[11px]
+                                        uppercase
+                                        tracking-wider
+                                        text-slate-500
+                                        "
+                                    >
+
+                                        <th
+                                            className="
+                                            py-2.5
+                                            pr-4
+                                            text-left
+                                            font-medium
+                                            "
+                                        >
+
+                                            Time
+
+                                        </th>
+
+
+                                        <th
+                                            className="
+                                            py-2.5
+                                            pr-4
+                                            text-left
+                                            font-medium
+                                            "
+                                        >
+
+                                            Command
+
+                                        </th>
+
+
+                                        <th
+                                            className="
+                                            py-2.5
+                                            text-left
+                                            font-medium
+                                            "
+                                        >
+
+                                            Status
+
+                                        </th>
+
+                                    </tr>
+
+                                </thead>
+
+
+                                <tbody>
+
+                                    {
+                                        commands.map(
+                                            command => (
+
+                                                <tr
+                                                    key={
+                                                        command.id
+                                                    }
+
+                                                    className="
+                                                    border-b
+                                                    border-slate-800/60
+                                                    last:border-b-0
+                                                    hover:bg-slate-800/30
+                                                    transition
+                                                    "
+                                                >
+
+
+                                                    {/* Time */}
+
+                                                    <td
+                                                        className="
+                                                        py-3
+                                                        pr-4
+                                                        text-xs
+                                                        text-slate-400
+                                                        whitespace-nowrap
+                                                        "
+                                                    >
+
+                                                        {
+                                                            formatDateTime(
+                                                                command.created_at
+                                                            )
+                                                        }
+
+                                                    </td>
+
+
+                                                    {/* Command */}
+
+                                                    <td
+                                                        className="
+                                                        py-3
+                                                        pr-4
+                                                        "
+                                                    >
+
+                                                        <span
+                                                            className="
+                                                            text-sm
+                                                            font-medium
+                                                            text-slate-200
+                                                            "
+                                                        >
+
+                                                            {
+                                                                formatCommand(
+                                                                    command.command
+                                                                )
+                                                            }
+
+                                                        </span>
+
+                                                    </td>
+
+
+                                                    {/* Status */}
+
+                                                    <td
+                                                        className="
+                                                        py-3
+                                                        "
+                                                    >
+
+                                                        <StatusBadge
+                                                            color={
+                                                                badgeColor(
+                                                                    command.status
+                                                                )
+                                                            }
+                                                        >
+
+                                                            {
+                                                                command.status
+                                                            }
+
+                                                        </StatusBadge>
+
+                                                    </td>
+
+                                                </tr>
+
+                                            )
+                                        )
+                                    }
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+
+                        {/* ------------------------------------------------ */}
+                        {/* Pagination */}
+                        {/* ------------------------------------------------ */}
+
+                        <div
+                            className="
+                            flex
+                            items-center
+                            justify-between
+                            gap-3
+                            mt-4
+                            pt-3
+                            border-t
+                            border-slate-800
+                            "
+                        >
+
+
+                            {/* Previous */}
+
+                            <button
+                                type="button"
+
+                                disabled={
+                                    !hasPrevious ||
+                                    loading
+                                }
+
+                                onClick={() =>
+                                    loadCommands(
+                                        currentPage - 1
+                                    )
+                                }
+
+                                className="
+                                px-3
+                                py-1.5
+                                rounded-md
+                                border
+                                border-slate-800
+                                bg-slate-900
+                                text-xs
+                                text-slate-400
+                                hover:bg-slate-800
+                                hover:text-white
+                                disabled:opacity-30
+                                disabled:cursor-not-allowed
+                                "
+                            >
+
+                                ← Previous
+
+                            </button>
+
+
+                            {/* Page Indicator */}
+
+                            <div
+                                className="
+                                text-xs
+                                text-slate-500
+                                "
+                            >
+
+                                Page{" "}
+
+                                <span
+                                    className="
+                                    text-slate-300
+                                    font-medium
+                                    "
+                                >
+
+                                    {currentPage}
+
+                                </span>
+
+
+                                {" "}of{" "}
+
+
+                                <span
+                                    className="
+                                    text-slate-300
+                                    font-medium
+                                    "
+                                >
+
+                                    {totalPages}
+
+                                </span>
+
+                            </div>
+
+
+                            {/* Next */}
+
+                            <button
+                                type="button"
+
+                                disabled={
+                                    !hasNext ||
+                                    loading
+                                }
+
+                                onClick={() =>
+                                    loadCommands(
+                                        currentPage + 1
+                                    )
+                                }
+
+                                className="
+                                px-3
+                                py-1.5
+                                rounded-md
+                                border
+                                border-slate-800
+                                bg-slate-900
+                                text-xs
+                                text-slate-400
+                                hover:bg-slate-800
+                                hover:text-white
+                                disabled:opacity-30
+                                disabled:cursor-not-allowed
+                                "
+                            >
+
+                                Next →
+
+                            </button>
+
+                        </div>
+
+                    </>
+
+                )
             }
 
         </Card>
@@ -394,5 +728,6 @@ function ConnectorCommandHistory({
     );
 
 }
+
 
 export default ConnectorCommandHistory;

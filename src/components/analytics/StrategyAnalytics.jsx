@@ -40,134 +40,72 @@ function StrategyAnalytics({
     const singleStrategy =
         strategies.length === 1;
 
+    const getProfitIcon = (profit) => {
+        const numericProfit = Number(profit);
+
+        if (numericProfit < 0) {
+            return {
+                icon: "↘︎",
+                iconColor: "text-red-400",
+                iconBg: "bg-red-500/10",
+            };
+        }
+
+        return {
+            icon: "↗︎",
+            iconColor: "text-green-400",
+            iconBg: "bg-green-500/10",
+        };
+    };
+    const bestStrategyIcon = getProfitIcon(bestStrategy?.total_profit);
+    const worstStrategyIcon = getProfitIcon(worstStrategy?.total_profit);
+
     return (
 
         <>
+            <div className="mb-3">
+                <h2 className="text-sm font-medium text-slate-300">
+                    Strategy Performance
+                </h2>
 
-            <div
-                className="
-                grid
-                grid-cols-1
-                md:grid-cols-3
-                gap-6
-                "
-            >
+                <p className="text-xs text-slate-500 mt-1">
+                    Compare profitability and trading activity across strategies.
+                </p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 
-                {
+                <MetricCard
+                    title="Best Strategy"
+                    prefix="$"
+                    value={bestStrategy?.total_profit}
+                    subtitle={bestStrategy?.strategy || "-"}
+                    icon={bestStrategyIcon.icon}
+                    iconColor={bestStrategyIcon.iconColor}
+                    iconBg={bestStrategyIcon.iconBg}
+                />
 
-                    singleStrategy
+                <MetricCard
+                    title="Worst Strategy"
+                    prefix="$"
+                    value={worstStrategy?.total_profit}
+                    subtitle={worstStrategy?.strategy|| "-"}
+                    icon={worstStrategyIcon.icon}
+                    iconColor={worstStrategyIcon.iconColor}
+                    iconBg={worstStrategyIcon.iconBg}
+                />
 
-                    ? (
-
-                        <>
-
-                            <MetricCard
-
-                                title="Total Profit"
-
-                                value={
-                                    strategies[0]
-                                    .total_profit
-                                }
-
-                                prefix="$"
-
-                            />
-
-                            <MetricCard
-
-                                title="Win Rate"
-
-                                value={
-                                    strategies[0]
-                                    .win_rate
-                                }
-
-                                suffix="%"
-
-                            />
-
-                            <MetricCard
-
-                                title="Trades"
-
-                                value={
-                                    strategies[0]
-                                    .total_positions
-                                }
-
-                            />
-
-                        </>
-
-                    )
-
-                    : (
-
-                        <>
-
-                            <MetricCard
-
-                                title="Best Strategy"
-
-                                subtitle={
-                                    bestStrategy.strategy
-                                }
-
-                                value={
-                                    bestStrategy.total_profit
-                                }
-
-                                prefix="$"
-
-                            />
-
-                            <MetricCard
-
-                                title="Worst Strategy"
-
-                                subtitle={
-                                    worstStrategy.strategy
-                                }
-
-                                value={
-                                    worstStrategy.total_profit
-                                }
-
-                                prefix="$"
-
-                            />
-
-                            <MetricCard
-
-                                title="Most Active Strategy"
-
-                                subtitle={
-                                    mostActiveStrategy.strategy
-                                }
-
-                                value={
-                                    mostActiveStrategy.total_positions
-                                }
-
-                            />
-
-                        </>
-
-                    )
-
-                }
+                <MetricCard
+                    title="Most Active Strategy"
+                    value={mostActiveStrategy?.total_positions}
+                    subtitle={mostActiveStrategy?.strategy || "-"}
+                    icon="▥"
+                    iconColor="text-blue-400"
+                    iconBg="bg-blue-500/10"
+                />
 
             </div>
 
-            <div
-                className="
-                grid
-                grid-cols-1
-                xl:grid-cols-5
-                gap-6
-                "
-            >
+            <div className="grid grid-cols-1 xl:grid-cols-5 gap-4">
 
                 <div
                     className="

@@ -2,203 +2,164 @@ import MetricCard from "../MetricCard";
 import SymbolProfitChart from "../SymbolProfitChart";
 import SymbolPerformanceTable from "../SymbolPerformanceTable";
 
+function SymbolAnalytics({ symbols }) {
+    const bestSymbol = symbols.length
+        ? [...symbols].sort(
+              (a, b) => Number(b.profit) - Number(a.profit)
+          )[0]
+        : null;
 
-function SymbolAnalytics({
+    const worstSymbol = symbols.length
+        ? [...symbols].sort(
+              (a, b) => Number(a.profit) - Number(b.profit)
+          )[0]
+        : null;
 
-    symbols
+    const mostTradedSymbol = symbols.length
+        ? [...symbols].sort(
+              (a, b) =>
+                  Number(b.positions) - Number(a.positions)
+          )[0]
+        : null;
 
-}) {
+    const singleSymbol = symbols.length === 1;
 
-    const bestSymbol =
-        [...symbols]
-            .sort(
-                (a, b) =>
-                    b.profit -
-                    a.profit
-            )[0];
+    // Determine icon based on actual profit.
+    // Positive/zero profit -> green upward arrow.
+    // Negative profit -> red downward arrow.
+    const getProfitIcon = (profit) => {
+        const numericProfit = Number(profit);
 
-    const worstSymbol =
-        [...symbols]
-            .sort(
-                (a, b) =>
-                    a.profit -
-                    b.profit
-            )[0];
+        if (numericProfit < 0) {
+            return {
+                icon: "↘︎",
+                iconColor: "text-red-400",
+                iconBg: "bg-red-500/10",
+            };
+        }
 
-    const mostTradedSymbol =
-        [...symbols]
-            .sort(
-                (a, b) =>
-                    b.positions -
-                    a.positions
-            )[0];
+        return {
+            icon: "↗︎",
+            iconColor: "text-green-400",
+            iconBg: "bg-green-500/10",
+        };
+    };
 
-    const singleSymbol =
-        symbols.length === 1;
+    const bestSymbolIcon = getProfitIcon(bestSymbol?.profit);
+    const worstSymbolIcon = getProfitIcon(worstSymbol?.profit);
 
     return (
+        <div className="space-y-5">
 
-        <>
+            {/* Section label */}
+            <div>
+                <h2 className="text-sm font-medium text-slate-300">
+                    Symbol Performance
+                </h2>
 
-            <div
-                className="
-                grid
-                grid-cols-1
-                md:grid-cols-3
-                gap-6
-                "
-            >
+                <p className="text-xs text-slate-500 mt-1">
+                    Compare profitability and trading activity across symbols.
+                </p>
+            </div>
 
-                {
+            {/* KPI Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 
-                    singleSymbol
+                {singleSymbol ? (
+                    <>
+                        {/* Total Profit */}
+                        <MetricCard
+                            title="Total Profit"
+                            prefix="$"
+                            value={bestSymbol?.profit}
+                            subtitle={bestSymbol?.symbol || "-"}
+                            icon={bestSymbolIcon.icon}
+                            iconColor={bestSymbolIcon.iconColor}
+                            iconBg={bestSymbolIcon.iconBg}
+                        />
 
-                    ? (
+                        {/* Win Rate */}
+                        <MetricCard
+                            title="Win Rate"
+                            value={bestSymbol?.win_rate}
+                            suffix="%"
+                            subtitle={bestSymbol?.symbol || "-"}
+                            icon="◎"
+                            iconColor="text-blue-400"
+                            iconBg="bg-blue-500/10"
+                        />
 
-                        <>
+                        {/* Average Trade */}
+                        <MetricCard
+                            title="Avg Trade"
+                            prefix="$"
+                            value={
+                                Number(bestSymbol?.positions) > 0
+                                    ? Number(bestSymbol.profit) /
+                                      Number(bestSymbol.positions)
+                                    : 0
+                            }
+                            subtitle={bestSymbol?.symbol || "-"}
+                            icon="≋"
+                            iconColor="text-purple-400"
+                            iconBg="bg-purple-500/10"
+                        />
+                    </>
+                ) : (
+                    <>
+                        {/* Best Symbol */}
+                        <MetricCard
+                            title="Best Symbol"
+                            prefix="$"
+                            value={bestSymbol?.profit}
+                            subtitle={bestSymbol?.symbol || "-"}
+                            icon={bestSymbolIcon.icon}
+                            iconColor={bestSymbolIcon.iconColor}
+                            iconBg={bestSymbolIcon.iconBg}
+                        />
 
-                            <MetricCard
+                        {/* Worst Symbol */}
+                        <MetricCard
+                            title="Worst Symbol"
+                            prefix="$"
+                            value={worstSymbol?.profit}
+                            subtitle={worstSymbol?.symbol || "-"}
+                            icon={worstSymbolIcon.icon}
+                            iconColor={worstSymbolIcon.iconColor}
+                            iconBg={worstSymbolIcon.iconBg}
+                        />
 
-                                title="Total Profit"
-
-                                value={
-                                    symbols[0]
-                                    .profit
-                                }
-
-                                prefix="$"
-
-                            />
-
-                            <MetricCard
-
-                                title="Win Rate"
-
-                                value={
-                                    symbols[0]
-                                    .win_rate
-                                }
-
-                                suffix="%"
-
-                            />
-
-                            <MetricCard
-
-                                title="Avg Trade"
-
-                                value={
-                                    symbols[0]
-                                    .avg_trade
-                                }
-
-                                prefix="$"
-
-                            />
-
-                        </>
-
-                    )
-
-                    : (
-
-                        <>
-
-                            <MetricCard
-
-                                title="Best Symbol"
-
-                                subtitle={
-                                    bestSymbol.symbol
-                                }
-
-                                value={
-                                    bestSymbol.profit
-                                }
-
-                                prefix="$"
-
-                            />
-
-                            <MetricCard
-
-                                title="Worst Symbol"
-
-                                subtitle={
-                                    worstSymbol.symbol
-                                }
-
-                                value={
-                                    worstSymbol.profit
-                                }
-
-                                prefix="$"
-
-                            />
-
-                            <MetricCard
-
-                                title="Most Traded"
-
-                                subtitle={
-                                    mostTradedSymbol.symbol
-                                }
-
-                                value={
-                                    mostTradedSymbol.positions
-                                }
-
-                            />
-
-                        </>
-
-                    )
-
-                }
+                        {/* Most Traded Symbol */}
+                        <MetricCard
+                            title="Most Traded Symbol"
+                            value={mostTradedSymbol?.positions}
+                            subtitle={mostTradedSymbol?.symbol || "-"}
+                            icon="▥"
+                            iconColor="text-blue-400"
+                            iconBg="bg-blue-500/10"
+                        />
+                    </>
+                )}
 
             </div>
 
-            <div
-                className="
-                grid
-                grid-cols-1
-                xl:grid-cols-5
-                gap-6
-                "
-            >
+            {/* Chart + Table */}
+            <div className="grid grid-cols-1 xl:grid-cols-5 gap-4">
 
-                <div
-                    className="
-                    xl:col-span-2
-                    h-[450px]
-                    "
-                >
-
-                    <SymbolProfitChart
-                        data={symbols}
-                    />
-
+                {/* Profit Chart */}
+                <div className="xl:col-span-2 h-[450px]">
+                    <SymbolProfitChart data={symbols} />
                 </div>
 
-                <div
-                    className="
-                    xl:col-span-3
-                    h-[450px]
-                    "
-                >
-
-                    <SymbolPerformanceTable
-                        symbols={symbols}
-                    />
-
+                {/* Performance Table */}
+                <div className="xl:col-span-3 h-[450px]">
+                    <SymbolPerformanceTable symbols={symbols} />
                 </div>
 
             </div>
 
-        </>
-
+        </div>
     );
-
 }
 
 export default SymbolAnalytics;
