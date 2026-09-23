@@ -1,41 +1,117 @@
-function MonthlyTable({ monthly }) {
+function MonthlyTable({ monthly = [] }) {
+
     return (
-        <div className="bg-slate-900 border border-slate-800 rounded-xl shadow-sm h-[420px] flex flex-col overflow-hidden">
+
+        <div className="
+            h-[420px]
+            flex
+            flex-col
+            overflow-hidden
+            rounded-xl
+            border
+            border-slate-800
+            bg-slate-900
+            shadow-sm
+        ">
 
             {/* Header */}
-            <div className="px-5 py-4 border-b border-slate-800 flex-shrink-0">
-                <h2 className="text-white text-base font-semibold">
+
+            <div className="
+                flex-shrink-0
+                border-b
+                border-slate-800
+                px-5
+                py-4
+            ">
+
+                <h2 className="
+                    text-[13px]
+                    font-semibold
+                    tracking-tight
+                    text-slate-100
+                ">
                     Monthly Performance
                 </h2>
 
-                <p className="text-slate-500 text-xs mt-1">
+                <p className="
+                    mt-0.5
+                    text-[11px]
+                    text-slate-500
+                ">
                     Monthly trading performance
                 </p>
+
             </div>
 
-            {/* Table */}
-            <div className="flex-1 min-h-0 overflow-hidden">
 
-                <table className="w-full text-sm">
+            {/* Scrollable Table Area */}
 
-                    {/* Header */}
-                    <thead className="bg-slate-900 border-b border-slate-800">
+            <div className="
+                min-h-0
+                flex-1
+                overflow-y-auto
+                overflow-x-hidden
+                scrollbar-thin
+                scrollbar-track-slate-900
+                scrollbar-thumb-slate-700
+            ">
 
-                        <tr className="text-xs uppercase tracking-wide text-slate-500">
+                <table className="
+                    w-full
+                    text-sm
+                ">
 
-                            <th className="text-left px-5 py-3 font-medium">
+                    {/* Table Header */}
+
+                    <thead className="
+                        sticky
+                        top-0
+                        z-10
+                        border-b
+                        border-slate-800
+                        bg-slate-900
+                    ">
+
+                        <tr className="
+                            text-[10px]
+                            uppercase
+                            tracking-wide
+                            text-slate-500
+                        ">
+
+                            <th className="
+                                px-5
+                                py-3
+                                text-left
+                                font-medium
+                            ">
                                 Month
                             </th>
 
-                            <th className="text-right px-4 py-3 font-medium">
+                            <th className="
+                                px-4
+                                py-3
+                                text-right
+                                font-medium
+                            ">
                                 P&L
                             </th>
 
-                            <th className="text-right px-4 py-3 font-medium">
+                            <th className="
+                                px-4
+                                py-3
+                                text-right
+                                font-medium
+                            ">
                                 Win Rate
                             </th>
 
-                            <th className="text-right px-5 py-3 font-medium">
+                            <th className="
+                                px-5
+                                py-3
+                                text-right
+                                font-medium
+                            ">
                                 Profit Factor
                             </th>
 
@@ -43,77 +119,158 @@ function MonthlyTable({ monthly }) {
 
                     </thead>
 
-                    {/* Body */}
-                    <tbody className="divide-y divide-slate-800/70">
 
-                        {monthly.map((row, index) => {
+                    {/* Table Body */}
 
-                            const profit = Number(
-                                row.net_trading_profit || 0
-                            );
+                    <tbody className="
+                        divide-y
+                        divide-slate-800/70
+                    ">
 
-                            const winRate = Number(
-                                row.win_rate || 0
-                            );
+                        {monthly.length === 0 ? (
 
-                            const profitFactor = Number(
-                                row.profit_factor || 0
-                            );
+                            <tr>
 
-                            return (
-                                <tr
-                                    key={row.month || index}
-                                    className="hover:bg-slate-800/30 transition"
+                                <td
+                                    colSpan="4"
+                                    className="
+                                        px-5
+                                        py-10
+                                        text-center
+                                        text-xs
+                                        text-slate-500
+                                    "
                                 >
+                                    No monthly performance data
+                                </td>
 
-                                    {/* Month */}
-                                    <td className="px-5 py-2.5 text-slate-200 font-medium">
-                                        {row.month || "-"}
-                                    </td>
+                            </tr>
 
-                                    {/* P&L */}
-                                    <td
-                                        className={`px-4 py-2.5 text-right font-semibold tabular-nums ${
-                                            profit > 0
-                                                ? "text-green-400"
-                                                : profit < 0
-                                                    ? "text-red-400"
-                                                    : "text-slate-300"
-                                        }`}
+                        ) : (
+
+                            monthly.map((row, index) => {
+
+                                const profit =
+                                    Number(
+                                        row.net_trading_profit || 0
+                                    );
+
+                                const winRate =
+                                    Number(
+                                        row.win_rate || 0
+                                    );
+
+                                const profitFactor =
+                                    Number(
+                                        row.profit_factor || 0
+                                    );
+
+
+                                return (
+
+                                    <tr
+                                        key={
+                                            row.month ||
+                                            index
+                                        }
+                                        className="
+                                            transition
+                                            hover:bg-slate-800/30
+                                        "
                                     >
-                                        {profit > 0 ? "+" : ""}
-                                        ${profit.toFixed(2)}
-                                    </td>
 
-                                    {/* Win Rate */}
-                                    <td className="px-4 py-2.5 text-right text-slate-300 tabular-nums">
-                                        {winRate.toFixed(2)}%
-                                    </td>
+                                        {/* Month */}
 
-                                    {/* Profit Factor */}
-                                    <td
-                                        className={`px-5 py-2.5 text-right font-medium tabular-nums ${
-                                            profitFactor > 1
-                                                ? "text-green-400"
-                                                : profitFactor < 1
-                                                    ? "text-red-400"
-                                                    : "text-slate-300"
-                                        }`}
-                                    >
-                                        {profitFactor.toFixed(2)}
-                                    </td>
+                                        <td className="
+                                            px-5
+                                            py-2.5
+                                            text-xs
+                                            font-medium
+                                            text-slate-200
+                                        ">
+                                            {row.month || "-"}
+                                        </td>
 
-                                </tr>
-                            );
-                        })}
+
+                                        {/* P&L */}
+
+                                        <td
+                                            className={`
+                                                px-4
+                                                py-2.5
+                                                text-right
+                                                text-xs
+                                                font-semibold
+                                                tabular-nums
+                                                ${
+                                                    profit > 0
+                                                        ? "text-emerald-400"
+                                                        : profit < 0
+                                                            ? "text-red-400"
+                                                            : "text-slate-300"
+                                                }
+                                            `}
+                                        >
+                                            {profit > 0 ? "+" : ""}
+                                            ${profit.toFixed(2)}
+                                        </td>
+
+
+                                        {/* Win Rate */}
+
+                                        <td className="
+                                            px-4
+                                            py-2.5
+                                            text-right
+                                            text-xs
+                                            tabular-nums
+                                            text-slate-300
+                                        ">
+                                            {winRate.toFixed(2)}%
+                                        </td>
+
+
+                                        {/* Profit Factor */}
+
+                                        <td
+                                            className={`
+                                                px-5
+                                                py-2.5
+                                                text-right
+                                                text-xs
+                                                font-medium
+                                                tabular-nums
+                                                ${
+                                                    profitFactor > 1
+                                                        ? "text-emerald-400"
+                                                        : profitFactor < 1
+                                                            ? "text-red-400"
+                                                            : "text-slate-300"
+                                                }
+                                            `}
+                                        >
+                                            {profitFactor.toFixed(2)}
+                                        </td>
+
+                                    </tr>
+
+                                );
+
+                            })
+
+                        )}
 
                     </tbody>
 
                 </table>
 
             </div>
+
         </div>
+
     );
+
 }
+
 
 export default MonthlyTable;
